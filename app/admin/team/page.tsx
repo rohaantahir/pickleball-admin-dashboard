@@ -28,6 +28,7 @@ type TeamMemberFormValues = z.infer<typeof teamMemberSchema>
 export default function TeamPage() {
   const [roleFilter, setRoleFilter] = useState("all")
   const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
 
   const form = useForm<TeamMemberFormValues>({
@@ -49,9 +50,28 @@ export default function TeamPage() {
     setEditDialogOpen(true)
   }
 
+  const handleAddClick = () => {
+    setSelectedMember(null)
+    form.reset()
+    setEditDialogOpen(true)
+  }
+
+  const handleDeleteClick = (member: TeamMember) => {
+    setSelectedMember(member)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleDelete = () => {
+    if (selectedMember) {
+      toast.success(`${selectedMember.name} has been removed from the team`)
+      setDeleteDialogOpen(false)
+      setSelectedMember(null)
+    }
+  }
+
   const onSubmit = (data: TeamMemberFormValues) => {
-    console.log("Updated team member:", { ...selectedMember, ...data })
-    toast.success("Team member updated successfully!")
+    console.log(selectedMember ? "Updated team member:" : "New team member:", data)
+    toast.success(selectedMember ? "Team member updated successfully!" : "Team member added successfully!")
     setEditDialogOpen(false)
     form.reset()
   }
@@ -80,14 +100,7 @@ export default function TeamPage() {
           <h1 className="text-3xl font-bold">Team & Roles</h1>
           <p className="text-muted-foreground">Manage internal admin users and their permissions</p>
         </div>
-        <Button
-          className="gap-2"
-          onClick={() => {
-            setSelectedMember(null)
-            form.reset()
-            setEditDialogOpen(true)
-          }}
-        >
+        <Button className="gap-2" onClick={handleAddClick}>
           <UserPlus className="h-4 w-4" />
           Add Team Member
         </Button>
@@ -151,6 +164,7 @@ export default function TeamPage() {
                           variant="ghost"
                           size="icon"
                           className="text-destructive hover:text-destructive"
+                          onClick={() => handleDeleteClick(member)}
                           disabled={member.role === "Super Admin"}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -277,6 +291,29 @@ export default function TeamPage() {
               </DialogFooter>
             </form>
           </Form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Remove Team Member</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Are you sure you want to remove <span className="font-semibold">{selectedMember?.name}</span> from the
+              team? This action cannot be undone.
+            </p>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={handleDelete}>
+                Remove Member
+              </Button>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

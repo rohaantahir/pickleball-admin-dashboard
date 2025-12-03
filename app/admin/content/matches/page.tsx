@@ -29,7 +29,6 @@ type MatchFormValues = z.infer<typeof matchSchema>
 
 export default function ContentMatchesPage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedMatch, setSelectedMatch] = useState<LiveMatch | null>(null)
 
   const form = useForm<MatchFormValues>({
@@ -61,19 +60,6 @@ export default function ContentMatchesPage() {
     setSelectedMatch(null)
     form.reset()
     setEditDialogOpen(true)
-  }
-
-  const handleDeleteClick = (match: LiveMatch) => {
-    setSelectedMatch(match)
-    setDeleteDialogOpen(true)
-  }
-
-  const handleDelete = () => {
-    if (selectedMatch) {
-      toast.success(`"${selectedMatch.title}" has been deleted`)
-      setDeleteDialogOpen(false)
-      setSelectedMatch(null)
-    }
   }
 
   const onSubmit = (data: MatchFormValues) => {
@@ -152,12 +138,7 @@ export default function ContentMatchesPage() {
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(match)}>
                           <Edit2 className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-destructive hover:text-destructive"
-                          onClick={() => handleDeleteClick(match)}
-                        >
+                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -306,29 +287,6 @@ export default function ContentMatchesPage() {
               </DialogFooter>
             </form>
           </Form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Match</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Are you sure you want to delete <span className="font-semibold">"{selectedMatch?.title}"</span>? This
-              action cannot be undone.
-            </p>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button variant="destructive" onClick={handleDelete}>
-                Delete Match
-              </Button>
-            </DialogFooter>
-          </div>
         </DialogContent>
       </Dialog>
     </div>

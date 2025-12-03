@@ -35,8 +35,6 @@ export default function MembersPage() {
   const [regionFilter, setRegionFilter] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [viewDialogOpen, setViewDialogOpen] = useState(false)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
   const itemsPerPage = 10
 
@@ -61,24 +59,6 @@ export default function MembersPage() {
       status: member.status,
     })
     setEditDialogOpen(true)
-  }
-
-  const handleView = (member: Member) => {
-    setSelectedMember(member)
-    setViewDialogOpen(true)
-  }
-
-  const handleDeleteClick = (member: Member) => {
-    setSelectedMember(member)
-    setDeleteDialogOpen(true)
-  }
-
-  const handleDelete = () => {
-    if (selectedMember) {
-      toast.success(`${selectedMember.name} has been deleted`)
-      setDeleteDialogOpen(false)
-      setSelectedMember(null)
-    }
   }
 
   const onSubmit = (data: MemberFormValues) => {
@@ -225,18 +205,13 @@ export default function MembersPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-end gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => handleView(member)}>
+                        <Button variant="ghost" size="icon">
                           <Eye className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(member)}>
                           <Edit2 className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-destructive hover:text-destructive"
-                          onClick={() => handleDeleteClick(member)}
-                        >
+                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -272,54 +247,6 @@ export default function MembersPage() {
           </div>
         </CardContent>
       </Card>
-
-      {/* View Member Dialog */}
-      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Member Details</DialogTitle>
-          </DialogHeader>
-          {selectedMember && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={selectedMember.avatar || "/placeholder.svg"} />
-                  <AvatarFallback>{selectedMember.name[0]}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="text-lg font-semibold">{selectedMember.name}</h3>
-                  <p className="text-sm text-muted-foreground">{selectedMember.email}</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Membership Tier</p>
-                  <Badge className={getTierColor(selectedMember.membershipTier)}>{selectedMember.membershipTier}</Badge>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Status</p>
-                  <Badge variant={selectedMember.status === "Active" ? "default" : "secondary"}>
-                    {selectedMember.status}
-                  </Badge>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Region</p>
-                  <p className="font-medium">{selectedMember.region}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Join Date</p>
-                  <p className="font-medium">{selectedMember.joinDate}</p>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
-                  Close
-                </Button>
-              </DialogFooter>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
 
       {/* Edit Member Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
@@ -430,29 +357,6 @@ export default function MembersPage() {
               </DialogFooter>
             </form>
           </Form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Member</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Are you sure you want to delete <span className="font-semibold">{selectedMember?.name}</span>? This action
-              cannot be undone.
-            </p>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button variant="destructive" onClick={handleDelete}>
-                Delete Member
-              </Button>
-            </DialogFooter>
-          </div>
         </DialogContent>
       </Dialog>
     </div>

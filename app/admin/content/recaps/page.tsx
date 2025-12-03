@@ -26,7 +26,6 @@ type RecapFormValues = z.infer<typeof recapSchema>
 
 export default function ContentRecapsPage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedRecap, setSelectedRecap] = useState<GameRecap | null>(null)
 
   const form = useForm<RecapFormValues>({
@@ -54,19 +53,6 @@ export default function ContentRecapsPage() {
     setSelectedRecap(null)
     form.reset()
     setEditDialogOpen(true)
-  }
-
-  const handleDeleteClick = (recap: GameRecap) => {
-    setSelectedRecap(recap)
-    setDeleteDialogOpen(true)
-  }
-
-  const handleDelete = () => {
-    if (selectedRecap) {
-      toast.success(`"${selectedRecap.title}" has been deleted`)
-      setDeleteDialogOpen(false)
-      setSelectedRecap(null)
-    }
   }
 
   const onSubmit = (data: RecapFormValues) => {
@@ -134,7 +120,6 @@ export default function ContentRecapsPage() {
                       variant="outline"
                       size="sm"
                       className="text-destructive hover:text-destructive bg-transparent"
-                      onClick={() => handleDeleteClick(recap)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -251,29 +236,6 @@ export default function ContentRecapsPage() {
               </DialogFooter>
             </form>
           </Form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Recap</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Are you sure you want to delete <span className="font-semibold">"{selectedRecap?.title}"</span>? This
-              action cannot be undone.
-            </p>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button variant="destructive" onClick={handleDelete}>
-                Delete Recap
-              </Button>
-            </DialogFooter>
-          </div>
         </DialogContent>
       </Dialog>
     </div>

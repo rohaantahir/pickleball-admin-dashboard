@@ -17,20 +17,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Pickleball Admin Hub | Manage Your Community",
-  description:
-    "Professional admin dashboard for pickleball community management, member insights, and tournament organization",
-  keywords: ["pickleball", "admin", "community", "management", "dashboard"],
-  authors: [{ name: "Pickleball Admin Hub" }],
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-icon.png",
-  },
+  title: "Pickleball Admin Hub",
+  description: "Admin dashboard for pickleball platform management",
     generator: 'v0.app'
 }
 
